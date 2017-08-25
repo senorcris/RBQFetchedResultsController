@@ -68,16 +68,17 @@ realmConfiguration = _realmConfiguration;
     
     // If we have sort descriptors then use them
     if (self.sortDescriptors.count > 0) {
-        if ([NSSortDescriptor class] == [[self.sortDescriptors objectAtIndex:0] class]) {
-            NSMutableArray * array = [NSMutableArray new];
-            for (NSSortDescriptor * sd in self.sortDescriptors) {
-                RLMSortDescriptor * rlmSortDescriptors = [RLMSortDescriptor sortDescriptorWithKeyPath:sd.key ascending:sd.ascending];
-                [array addObject:rlmSortDescriptors];
+        NSMutableArray * array = [NSMutableArray new];
+        for (id sd in self.sortDescriptors) {
+            RLMSortDescriptor * rlmSortDescriptor = sd;
+            if ([sd isKindOfClass:[NSSortDescriptor class]]) {
+                NSSortDescriptor * nsSd = (NSSortDescriptor *) sd;
+                rlmSortDescriptor = [RLMSortDescriptor sortDescriptorWithKeyPath:nsSd.key ascending:nsSd.ascending];
+                
             }
-            fetchResults = [fetchResults sortedResultsUsingDescriptors:array];
-        } else {
-            fetchResults = [fetchResults sortedResultsUsingDescriptors:self.sortDescriptors];
+            [array addObject:rlmSortDescriptor];
         }
+        fetchResults = [fetchResults sortedResultsUsingDescriptors:array];
     }
     
     return fetchResults;
