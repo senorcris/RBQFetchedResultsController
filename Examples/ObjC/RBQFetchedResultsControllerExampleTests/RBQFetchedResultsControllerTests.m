@@ -48,6 +48,22 @@
     XCTAssert(fetchedResultsController.fetchedObjects.count == 10);
 }
 
+- (void)testPerformFetchWithNSSortDescriptor
+{
+    [self insertDifferentSectionNameTestObject];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"inTable = YES"];
+    RBQFetchRequest *fetchRequest = [RBQFetchRequest fetchRequestWithEntityName:@"TestObject" inRealm:[RLMRealm defaultRealm] predicate:predicate];
+    NSSortDescriptor *sectionNameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"sectionName" ascending:YES];
+    fetchRequest.sortDescriptors = @[sectionNameSortDescriptor];
+    RBQFetchedResultsController *fetchedResultsController = [[RBQFetchedResultsController alloc] initWithFetchRequest:fetchRequest sectionNameKeyPath:@"sectionName" cacheName:@"cache"];
+    [fetchedResultsController performFetch];
+    
+    XCTAssert([fetchedResultsController numberOfSections] == 2);
+    XCTAssert([fetchedResultsController.sectionNameKeyPath isEqualToString:@"sectionName"]);
+    XCTAssert([fetchedResultsController.cacheName isEqualToString:@"cache"]);
+    XCTAssert(fetchedResultsController.fetchedObjects.count == 10);
+}
+
 - (void)testDeleteWithCacheName
 {
     [self insertDifferentSectionNameTestObject];
