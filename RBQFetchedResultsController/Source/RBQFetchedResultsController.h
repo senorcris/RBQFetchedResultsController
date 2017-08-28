@@ -45,7 +45,7 @@
  */
 @protocol RBQFetchedResultsControllerDelegate <NSObject>
 
-
+@optional
 /**
  *  Indicates that the controller has started identifying changes.
  *
@@ -97,7 +97,6 @@
  */
 - (void)controllerDidChangeContent:(nonnull RBQFetchedResultsController *)controller;
 
-@optional
 
 /**
  *  This method is called before the controller performs the fetch.
